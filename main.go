@@ -8,11 +8,20 @@ import (
 const BaseURL = "https://hacker-news.firebaseio.com/v0/"
 
 func main() {
-	c := client.NewHackerNewsClient()
+	c := client.New(BaseURL)
 
-	fmt.Println(c)
-}
+	stories, err := c.GetTopStoriesIDs()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("Stories found: %d\n", len(stories))
 
-func getTopStories() []string {
-	return []string{}
+	for i, story := range stories {
+		fmt.Printf("processing story: %d\n", i)
+		item, err := c.GetItem(story)
+		if err != nil {
+			fmt.Println(err)
+		}
+		fmt.Printf("%+v\n", item.Title)
+	}
 }
